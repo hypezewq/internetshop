@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .profile-container {
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-container h2 {
+            margin-bottom: 10px;
+        }
+
+        .profile-container p {
+            margin-bottom: 20px;
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c9302c;
+        }
+    </style>
+</head>
+<body>
+<div class="profile-container">
+    <h2>Ваше имя:</h2>
+    <p>Ваш email:</p>
+    <button class="logout-button">Выйти из аккаунта</button>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch("/get_data");
+        if (!response.ok) {
+            throw new Error("Не удалось получить данные");
+        }
+        const data = await response.json();
+
+        document.querySelector(".profile-container h2").innerText = data.username;
+        document.querySelector(".profile-container p").innerText = data.email;
+    } catch (err) {
+        console.error("Ошибка:", err);
+    }
+});
+
+document.querySelector(".logout-button").addEventListener("click", async () => {
+    try {
+        const response = await fetch("/logout", { method: "GET", credentials: "include"});
+        if (response.ok) {
+            window.location.href = "/login";
+        } else {
+            throw new Error("Не удалось выйти из системы");
+        }
+    } catch (err) {
+        console.error("Ошибка:", err);
+    }
+});
+</script>
+</body>
+</html>
